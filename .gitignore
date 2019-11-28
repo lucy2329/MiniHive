@@ -2,4 +2,6 @@
 *#
 *.jar
 data_schema.txt
-_schema.txt
+*_schema.txt
+*.csv
+
