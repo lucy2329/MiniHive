@@ -1,3 +1,5 @@
 *.class
 *#
 *.jar
+data_schema.txt
+_schema.txt

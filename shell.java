@@ -63,7 +63,8 @@ class shell {
 	                
 	                String colname = parsed[1];
 	                String tablename = parsed[3];
-	                	
+					Integer []columnNumbers = new Integer[1000];
+					Integer columnLength = 0;
 	                Integer colnumber = new Integer(-1);
 	                
 	                if(parsed[0].equals("SELECT"))
@@ -81,20 +82,29 @@ class shell {
 					//System.out.println(schema);
 					
 					String[] parsedQuery = schema.split(",");
-					int counter=0;
-					
-					while(counter < parsedQuery.length)
+					int maxCols=0;
+					String[] colNumList = colname.split(",");
+					int counterList = 0;
+					System.out.println(colNumList[0]);
+					while(counterList < colNumList.length)
 					{
-						cols = parsedQuery[counter].split("=");
-						//System.out.println(cols[0]+"$"+cols[1]);
-						if(cols[0].equals(colname))
+						int counter = 0;
+						while(counter < parsedQuery.length)
 						{
-							colnumber=counter;
-							break;
+							
+							cols = parsedQuery[counter].split("=");
+							System.out.println(cols[0]+"$"+colNumList[counterList]);
+							if(cols[0].equals(colNumList[counterList]))
+							{
+								columnNumbers[counterList]=counter;
+								colnumber=counter;
+								break;
+							}
+							counter++;
 						}
-						counter++;
+						counterList+=1;
 					}
-				
+					columnLength = counterList-1;
 				}
 				catch(IOException e)
 				{
@@ -121,9 +131,17 @@ class shell {
 			   		System.out.println("No such column");
 			   	}
 			   	else{
-			   		System.out.println(colnumber);
-			   		
-				   	String soloselect_code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;public class SelectColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");        if(rowElems["+colnumber+"] != \"\" && rowElems["+colnumber+"] !=\"colName\")        {             context.write(new Text(rowElems["+colnumber+"]),one);        }         }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private final static IntWritable one = new IntWritable(1);    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      for (IntWritable val : values) {        context.write(key, one);      }    }  }  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"select column\");    job.setJarByClass(SelectColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";		
+			   		int i = 0;
+			   		String outPutCommand="";
+			   		while(i<= columnLength){
+			   			if(i==columnLength)
+			   				outPutCommand = outPutCommand.concat("rowElems["+columnNumbers[i]+"]");	
+			   			else
+				   			outPutCommand = outPutCommand.concat("rowElems["+columnNumbers[i]+"]+"+"\"|\"+");	
+			   			i+=1;
+			   		}
+			   		System.out.println(outPutCommand);
+				   	String soloselect_code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;public class SelectColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");        if(rowElems["+colnumber+"] != \"\" && rowElems["+colnumber+"] !=\"colName\")        {             context.write(new Text("+outPutCommand+"),one);        }         }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private final static IntWritable one = new IntWritable(1);    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      for (IntWritable val : values) {        context.write(key, one);      }    }  }  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"select column\");    job.setJarByClass(SelectColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";		
 				   	
 				   	try
 	     				{	     					
@@ -213,6 +231,7 @@ class shell {
 	    			
 	    			
 	    			cmd = "hadoop fs -cat /output/part-r-00000";
+	    			System.out.println("COMMAND"+ cmd);
 		    	    	Process b = Runtime.getRuntime().exec(cmd);
 		    	    
 	   	    	    	BufferedReader stdInput4 = new BufferedReader(new InputStreamReader(b.getInputStream()));
