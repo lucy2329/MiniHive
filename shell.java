@@ -393,6 +393,7 @@ class shell {
                     Integer colnumber = new Integer(-1);
                     String checkString = "";
                     String whereString = "";
+                    int isString=0;
                     //select a from tbl where b < 5
                     if (parsed.length > 4) {
                         checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";
@@ -401,15 +402,22 @@ class shell {
                         while (counter < parsedQuery.length) {
 
                             cols = parsedQuery[counter].split("=");
-                            if (cols[0].equals(colNumList[counterList])) {
-                                columnNumbers[counterList] = counter;
+                            if (cols[0].equals(parsed[5])) {
                                 colnumber = counter;
+                                if(cols[1].equals("str"))isString = 1;
                                 break;
                             }
                             counter++;
                         }
+                        if(isString ==1){
+                         	checkString = "";
+                         	String[] quotes = cmd.split("\"");
+ 	                        whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1]+"\")";
+                         }
+                         else{
                         whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
-                    }
+                    	}
+            	}
 
                     colnumber = -1;
                     System.out.println(colNumList[0]);
