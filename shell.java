@@ -35,15 +35,15 @@ class shell {
 
 
     // EXEC SELECT , WHERE here 
-    public static void execselect(Integer[] columnNumbers, int columnLength, int where, String whereCondition) {
+    public static void execselect(Integer[] columnNumbers, int columnLength, int whereCondition, String whereStr, String checkString) {
         String whereString = "";
         String s = null;
         String cmd = "";
 
-        if (where == 0) {
+        if (whereCondition == 0) {
             whereString = "1==1";
         } else {
-            whereString = whereCondition;
+            whereString = whereStr;
         }
         int i = 0;
         String outPutCommand = "";
@@ -55,7 +55,7 @@ class shell {
             i += 1;
         }
         System.out.println(outPutCommand);
-        String soloselect_code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;public class SelectColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");        if(" + whereString + ")        {             context.write(new Text(" + outPutCommand + "),one);        }         }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private final static IntWritable one = new IntWritable(1);    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      for (IntWritable val : values) {        context.write(key, one);      }    }  }  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"select column\");    job.setJarByClass(SelectColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
+        String soloselect_code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.commons.lang3.StringUtils;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;public class SelectColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");" + checkString + "        if(" + whereString + ")        {             context.write(new Text(" + outPutCommand + "),one);        }         }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private final static IntWritable one = new IntWritable(1);    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      for (IntWritable val : values) {        context.write(key, one);      }    }  }  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"select column\");    job.setJarByClass(SelectColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("SelectColumn.java"));
@@ -86,7 +86,7 @@ class shell {
             }
 
 
-            long sleeper = 10000000 L;
+            long sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
             }
@@ -110,7 +110,7 @@ class shell {
                 System.out.println(s);
             }
 
-            sleeper = 1000000 L;
+            sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
             }
@@ -132,7 +132,7 @@ class shell {
                 System.out.println(s);
             }
 
-            sleeper = 1000000 L;
+            sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
             }
@@ -155,7 +155,7 @@ class shell {
                 System.out.println(s);
             }
 
-            sleeper = 1000000 L;
+            sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
             }
@@ -185,7 +185,7 @@ class shell {
 
     // START OF SELECT COUNT
     public static void execcount(int colnumber) {
-        String solocount_code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;public class CountColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");        if(rowElems[" + colnumber + "] != \"\" && rowElems[" + colnumber + "] !=\"colName\")        {             context.write(new Text(rowElems[" + colnumber + "]),one);        }         }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private IntWritable result = new IntWritable();    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      int sum = 0;      for (IntWritable val : values) {        sum += val.get();      }      result.set(sum);      context.write(key, result);    }  }  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"word count\");    job.setJarByClass(CountColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
+        String solocount_code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.commons.lang3.StringUtils;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;public class CountColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");        if(rowElems[" + colnumber + "] != \"\" && rowElems[" + colnumber + "] !=\"colName\")        {             context.write(new Text(rowElems[" + colnumber + "]),one);        }         }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private IntWritable result = new IntWritable();    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      int sum = 0;      for (IntWritable val : values) {        sum += val.get();      }      result.set(sum);      context.write(key, result);    }  }  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"word count\");    job.setJarByClass(CountColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
         String s = "";
         String cmd = "";
 
@@ -193,9 +193,6 @@ class shell {
             BufferedWriter writer = new BufferedWriter(new FileWriter("CountColumn.java"));
             writer.write(solocount_code);
             writer.close();
-
-
-
 
             cmd = "hadoop com.sun.tools.javac.Main CountColumn.java";
             Process q = Runtime.getRuntime().exec(cmd);
@@ -209,14 +206,12 @@ class shell {
                 System.out.println(s);
             }
 
-
             System.out.println("Here is the standard error of the java select compile command (if any):\n");
             while ((s = stdError1.readLine()) != null) {
                 System.out.println(s);
             }
 
-
-            long sleeper = 10000000 L;
+            long sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
             }
@@ -240,7 +235,7 @@ class shell {
                 System.out.println(s);
             }
 
-            sleeper = 1000000 L;
+            sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
             }
@@ -263,7 +258,7 @@ class shell {
             }
 
 
-            sleeper = 1000000 L;
+            sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
             }
@@ -284,7 +279,7 @@ class shell {
                 System.out.println(s);
             }
 
-            sleeper = 1000000 L;
+            sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
             }
@@ -377,23 +372,46 @@ class shell {
 
             //START OF SELECT without COUNT
             if (parsed[0].equals("SELECT") && parsed[1].indexOf("COUNT") != 0) {
-                soloselect = 1;
-                Integer columnLength = 0;
-                Integer colnumber = new Integer(-1);
+
+
 
                 try {
-                    BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
 
                     String schema = "";
+                    BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
+
+                    int whereCondition = 0;
                     schema = br.readLine();
                     String[] cols;
-                    //System.out.println(schema);
-
-                    String[] parsedQuery = schema.split(",");
                     int maxCols = 0;
                     String[] colNumList = colname.split(",");
                     Integer[] columnNumbers = new Integer[100];
                     int counterList = 0;
+                    String[] parsedQuery = schema.split(",");
+                    soloselect = 1;
+                    Integer columnLength = 0;
+                    Integer colnumber = new Integer(-1);
+                    String checkString = "";
+                    String whereString = "";
+                    //select a from tbl where b < 5
+                    if (parsed.length > 4) {
+                        checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";
+                        whereCondition = 1;
+                        int counter = 0;
+                        while (counter < parsedQuery.length) {
+
+                            cols = parsedQuery[counter].split("=");
+                            if (cols[0].equals(colNumList[counterList])) {
+                                columnNumbers[counterList] = counter;
+                                colnumber = counter;
+                                break;
+                            }
+                            counter++;
+                        }
+                        whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
+                    }
+
+                    colnumber = -1;
                     System.out.println(colNumList[0]);
                     while (counterList < colNumList.length) {
                         int counter = 0;
@@ -411,10 +429,8 @@ class shell {
                         counterList += 1;
                     }
                     columnLength = counterList - 1;
-
-
-
-                    execselect(columnNumbers, columnLength, 0, "");
+                    execselect(columnNumbers, columnLength, whereCondition, whereString, checkString);
+                    //^ Executing select
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -424,7 +440,7 @@ class shell {
                 solocount = 1;
                 colname = parsed[1].split("\\(")[1].replace(")", "");
                 System.out.println(colname);
-
+                Integer colnumber = new Integer(-1);
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
 
@@ -451,7 +467,8 @@ class shell {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } //end of select with count
+            }
+            //end of select with count
             else {
                 try {
                     Process p = Runtime.getRuntime().exec(cmd);
