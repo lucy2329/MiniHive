@@ -1,0 +1,13 @@
+word1
+hey
+cat
+dog
+monkey 
+buffalo
+monkey
+monkey
+dog
+cat
+dog
+cat
+dog
