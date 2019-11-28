@@ -10,9 +10,10 @@ class shell {
 			String s = null;
 			Integer load = new Integer(0);
 			Integer wordcount = new Integer(0);
+			Integer soloselect = new Integer(0);
 			
 			
-			System.out.print("hive$>");			
+			System.out.print("minihive$>");			
 			
 			Scanner scanner = new Scanner(System.in);			
 	                String cmd = scanner.nextLine();
@@ -24,6 +25,7 @@ class shell {
 	                }
 	                
 	                String[] parsed = cmd.split(" ");
+	                System.out.println(parsed[0]);
 	                
 	                if(parsed[0].equals("LOAD"))
 	                {
@@ -59,6 +61,48 @@ class shell {
 	                	
 	                }
 	                
+	                String colname = parsed[1];
+	                String tablename = parsed[3];
+	                	
+	                Integer colnumber = new Integer(-1);
+	                
+	                if(parsed[0].equals("SELECT"))
+	                {
+	                	
+	                	
+	                	soloselect=1;
+	                	
+	                	try{
+			        	BufferedReader br = new BufferedReader(new FileReader(tablename+"_schema.txt")); 
+					  
+					String schema=""; 
+					schema = br.readLine();
+					String[] cols;
+					//System.out.println(schema);
+					
+					String[] parsedQuery = schema.split(",");
+					int counter=0;
+					
+					while(counter < parsedQuery.length)
+					{
+						cols = parsedQuery[counter].split("=");
+						//System.out.println(cols[0]+"$"+cols[1]);
+						if(cols[0].equals(colname))
+						{
+							colnumber=counter;
+							break;
+						}
+						counter++;
+					}
+				
+				}
+				catch(IOException e)
+				{
+					e.printStackTrace();
+				}				 
+	                }
+	                
+	                
 	                if(parsed[0].equals("wordcount"))
 	                {
 	                	String filename = parsed[1];
@@ -68,27 +112,168 @@ class shell {
 	                }
 
 			try {
-			    
-			    // run the Unix "ps -ef" command
-			    // using the Runtime exec method:
-			    Process p = Runtime.getRuntime().exec(cmd);
-			    
-			    BufferedReader stdInput = new BufferedReader(new 
-				 InputStreamReader(p.getInputStream()));
+				
+			   if(soloselect==1)
+			   {
 
-			    BufferedReader stdError = new BufferedReader(new 
-				 InputStreamReader(p.getErrorStream()));
+			   	if(colnumber==-1)
+			   	{
+			   		System.out.println("No such column");
+			   	}
+			   	else{
+			   		System.out.println(colnumber);
+			   		
+				   	String soloselect_code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;public class SelectColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");        if(rowElems["+colnumber+"] != \"\" && rowElems["+colnumber+"] !=\"colName\")        {             context.write(new Text(rowElems["+colnumber+"]),one);        }         }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private final static IntWritable one = new IntWritable(1);    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      for (IntWritable val : values) {        context.write(key, one);      }    }  }  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"select column\");    job.setJarByClass(SelectColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";		
+				   	
+				   	try
+	     				{	     					
+	     					BufferedWriter writer = new BufferedWriter(new FileWriter("SelectColumn.java"));
+						writer.write(soloselect_code);
+						writer.close();
+	     				}
+	    				catch (IOException e)
+	    				{
+	    					e.printStackTrace();
+	    				}
+	    				
+	    			cmd = "hadoop com.sun.tools.javac.Main SelectColumn.java";
+		    	    	Process q = Runtime.getRuntime().exec(cmd);
+		    	    
+	   	    	    	BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
 
+		    		BufferedReader stdError1 = new BufferedReader(new InputStreamReader(q.getErrorStream()));
+		    
+			    
 			    // read the output from the command
-			    System.out.println("Here is the standard output of the command:\n");
-			    while ((s = stdInput.readLine()) != null) {
-				System.out.println(s);
-			    }
+				System.out.println("Here is the standard output of the java select compile command:\n");
+				while ((s = stdInput1.readLine()) != null) {
+					System.out.println(s);
+				}
 			    
 			    // read any errors from the attempted command
-			    System.out.println("Here is the standard error of the command (if any):\n");
-			    while ((s = stdError.readLine()) != null) {
-				System.out.println(s);
+			    System.out.println("Here is the standard error of the java select compile command (if any):\n");
+				while ((s = stdError1.readLine()) != null) {
+					System.out.println(s);
+				}
+				
+				
+				long sleeper = 10000000L;
+				while(sleeper>0){
+			    		sleeper--; //delay
+			    	}
+				//-------------------------------JAR COMMAND -------------------------------------------------------------------------------------------------------------------
+				
+				cmd = "jar cf SelectCol.jar SelectColumn.class SelectColumn$IntSumReducer.class SelectColumn$TokenizerMapper.class";
+		    	    	Process r = Runtime.getRuntime().exec(cmd);
+		    	    
+	   	    	    	BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(r.getInputStream()));
+
+		    		BufferedReader stdError2 = new BufferedReader(new InputStreamReader(r.getErrorStream()));
+		    	    // read the output from the command
+				System.out.println("Here is the standard output of the select jar command:\n");
+				while ((s = stdInput2.readLine()) != null) {
+					System.out.println(s);
+				}
+			    
+			    // read any errors from the attempted command
+			    System.out.println("Here is the standard error of the select jar command (if any):\n");
+				while ((s = stdError2.readLine()) != null) {
+					System.out.println(s);
+				}
+				
+				sleeper = 1000000L;
+				while(sleeper>0){
+			    		sleeper--; //delay
+			    	}
+				
+				cmd = "hadoop jar SelectCol.jar SelectColumn /minihive /output";
+		    	    	Process z = Runtime.getRuntime().exec(cmd);
+		    	    
+	   	    	    	BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
+		    		BufferedReader stdError3 = new BufferedReader(new InputStreamReader(z.getErrorStream()));
+		    	    // read the output from the command
+				System.out.println("Here is the standard output of the select run on hadoop:\n");
+				while ((s = stdInput3.readLine()) != null) {
+					System.out.println(s);
+				}
+			    
+			    // read any errors from the attempted command
+			    	System.out.println("Here is the standard error of the select run on hadoop (if any):\n");
+				while ((s = stdError3.readLine()) != null) {
+					System.out.println(s);
+				}
+	    			
+	    			
+	    			sleeper = 1000000L;
+				while(sleeper>0){
+			    		sleeper--; //delay
+			    	}
+				    			
+	    			
+	    			
+	    			
+	    			cmd = "hadoop fs -cat /output/part-r-00000";
+		    	    	Process b = Runtime.getRuntime().exec(cmd);
+		    	    
+	   	    	    	BufferedReader stdInput4 = new BufferedReader(new InputStreamReader(b.getInputStream()));
+		    		BufferedReader stdError4 = new BufferedReader(new InputStreamReader(b.getErrorStream()));
+		    	    // read the output from the command
+				System.out.println("Here is the standard output of the select cat command:\n");
+				while ((s = stdInput4.readLine()) != null) {
+					System.out.println(s);
+				}
+			    
+			    // read any errors from the attempted command
+			    	System.out.println("Here is the standard error of the select cat command(if any):\n");
+				while ((s = stdError4.readLine()) != null) {
+					System.out.println(s);
+				}
+				
+				sleeper = 1000000L;
+				while(sleeper>0){
+			    		sleeper--; //delay
+			    	}
+	    			
+	    			cmd = "hadoop fs -rm -r /output";
+		    	    	Process c = Runtime.getRuntime().exec(cmd);
+		    	    
+	   	    	    	BufferedReader stdInput5 = new BufferedReader(new InputStreamReader(c.getInputStream()));
+		    		BufferedReader stdError5 = new BufferedReader(new InputStreamReader(c.getErrorStream()));
+		    	    // read the output from the command
+				System.out.println("Here is the standard output of the select rm command:\n");
+				while ((s = stdInput5.readLine()) != null) {
+					System.out.println(s);
+				}
+			    
+			    // read any errors from the attempted command
+			    	System.out.println("Here is the standard error of the select rm command (if any):\n");
+				while ((s = stdError5.readLine()) != null) {
+					System.out.println(s);
+				}		   		
+					   	   				   		
+				}			   	
+			   }
+			   else
+			   {
+				    Process p = Runtime.getRuntime().exec(cmd);
+				    
+				    BufferedReader stdInput = new BufferedReader(new 
+					 InputStreamReader(p.getInputStream()));
+
+				    BufferedReader stdError = new BufferedReader(new 
+					 InputStreamReader(p.getErrorStream()));
+
+			
+				    System.out.println("Here is the standard output of the command:\n");
+				    while ((s = stdInput.readLine()) != null) {
+					System.out.println(s);
+				    }
+				    
+
+				    System.out.println("Here is the standard error of the command (if any):\n");
+				    while ((s = stdError.readLine()) != null) {
+					System.out.println(s);
+				    }
 			    }
 			    
 			    if(load==1)

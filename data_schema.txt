@@ -1,0 +1,1 @@
+cdatetime=str,addr=str,district=int,
