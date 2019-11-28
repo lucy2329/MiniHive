@@ -11,7 +11,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-public class SelectColumn {
+public class CountColumn {
 
   public static class TokenizerMapper
        extends Mapper<Object, Text, Text, IntWritable>{
@@ -33,22 +33,24 @@ public class SelectColumn {
 
   public static class IntSumReducer
        extends Reducer<Text,IntWritable,Text,IntWritable> {
-    private final static IntWritable one = new IntWritable(1);
+    private IntWritable result = new IntWritable();
 
     public void reduce(Text key, Iterable<IntWritable> values,
                        Context context
                        ) throws IOException, InterruptedException {
+      int sum = 0;
       for (IntWritable val : values) {
-        context.write(key, one);
+        sum += val.get();
       }
-    
+      result.set(sum);
+      context.write(key, result);
     }
   }
 
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
-    Job job = Job.getInstance(conf, "select column");
-    job.setJarByClass(SelectColumn.class);
+    Job job = Job.getInstance(conf, "word count");
+    job.setJarByClass(CountColumn.class);
     job.setMapperClass(TokenizerMapper.class);
     job.setCombinerClass(IntSumReducer.class);
     job.setReducerClass(IntSumReducer.class);
