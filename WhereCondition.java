@@ -30,11 +30,7 @@ public class WhereCondition {
         if(!StringUtils.isNumeric(rowElems[2]))
           return;
         if(Integer.parseInt(rowElems[2])>5)
-        {  
-            while(counter<rowElems.length){
-                colString = colString.concat(rowElems[counter]+",");
-                counter++;
-            } 
+        {               
             context.write(new Text(colString),one);
         }    
      }
