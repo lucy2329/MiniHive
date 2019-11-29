@@ -911,7 +911,7 @@ int isString=0;
                         whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
                         }
                 }
-
+                 counter = 0;
                  while (counter < parsedQuery.length) {
                         cols = parsedQuery[counter].split("=");
                         //System.out.println(cols[0]+"$"+cols[1]);
