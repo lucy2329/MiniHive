@@ -1,6 +1,6 @@
 # MiniHive
 
-# Steps to execute
+## Steps to execute
 
 1. hdfs dfs -mkdir /minihive
 
@@ -8,7 +8,7 @@
 
 3. java shell
 
-# SQL Queries Syntax
+## SQL Queries Syntax
 
 LOAD <filename.csv> as (col1=int, col2=str, col3=int, ........)
 
