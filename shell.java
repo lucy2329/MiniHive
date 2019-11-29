@@ -2,6 +2,33 @@ import java.io.*;
 import java.util.Scanner;
 
 class shell {
+    //mkdir function to create directory in hdfs
+    public static void mkdir(String name) {
+        String cmd = "hadoop fs -mkdir /"+name;
+        String s = "";
+        try {
+            Process q = Runtime.getRuntime().exec(cmd);
+            BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
+
+            BufferedReader stdError1 = new BufferedReader(new InputStreamReader(q.getErrorStream()));
+
+
+            System.out.println("Here is the standard output of mkdir command:\n");
+            while ((s = stdInput1.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            System.out.println("Here is the standard error of mkdir command (if any):\n");
+            while ((s = stdError1.readLine()) != null) {
+                System.out.println(s);
+            }
+        } 
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    // end of mkdir function
 
     //EXEC LOAD START
     public static void execload(String filename) {
@@ -443,6 +470,136 @@ class shell {
         }
 
     }
+
+    public static void execmin(int colnumber, int whereCondition, String whereStr, String checkString) {
+        String whereString = "";
+        String s = null;
+        String cmd = "";
+
+        if (whereCondition == 0) {
+            whereString = "1==1";
+        } else {
+            whereString = whereStr;
+        }
+        
+        String code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;import org.apache.commons.lang3.StringUtils;import java.util.Iterator; public class MinColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{          private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");  "+checkString+"    if("+whereString+" && StringUtils.isNumeric(rowElems["+colnumber+"])) {          context.write(new Text(\"\"), new IntWritable(Integer.parseInt(rowElems["+colnumber+"])));            }      }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private IntWritable result = new IntWritable();    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      int min = Integer.MAX_VALUE;      Iterator<IntWritable> iterator = values.iterator();      while (iterator.hasNext()) {          int value = iterator.next().get();        if (value < min) {          min = value;        }    }     context.write(new Text(key), new IntWritable(min));    }}  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"word count\");    job.setJarByClass(MinColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
+                
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("MinColumn.java"));
+            writer.write(code);
+            writer.close();
+
+            cmd = "hadoop com.sun.tools.javac.Main MinColumn.java";
+            Process q = Runtime.getRuntime().exec(cmd);
+
+            BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
+
+            BufferedReader stdError1 = new BufferedReader(new InputStreamReader(q.getErrorStream()));
+
+            System.out.println("Here is the standard output of the java select min compile command:\n");
+            while ((s = stdInput1.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            System.out.println("Here is the standard error of the java select min compile command (if any):\n");
+            while ((s = stdError1.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            long sleeper = 10000000L;
+            while (sleeper > 0) {
+                sleeper--; //delay
+            }
+            //-------------------------------JAR COMMAND -------------------------------------------------------------------------------------------------------------------
+
+            cmd = "jar cf MinCol.jar MinColumn.class MinColumn$IntSumReducer.class MinColumn$TokenizerMapper.class";
+            Process r = Runtime.getRuntime().exec(cmd);
+
+            BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(r.getInputStream()));
+
+            BufferedReader stdError2 = new BufferedReader(new InputStreamReader(r.getErrorStream()));
+
+            System.out.println("Here is the standard output of the select min jar command:\n");
+            while ((s = stdInput2.readLine()) != null) {
+                System.out.println(s);
+            }
+
+
+            System.out.println("Here is the standard error of the select min jar command (if any):\n");
+            while ((s = stdError2.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            sleeper = 10000000L;
+            while (sleeper > 0) {
+                sleeper--; //delay
+            }
+
+            cmd = "hadoop jar MinCol.jar MinColumn /minihive /output";
+            Process z = Runtime.getRuntime().exec(cmd);
+
+            BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
+            BufferedReader stdError3 = new BufferedReader(new InputStreamReader(z.getErrorStream()));
+
+            System.out.println("Here is the standard output of the select min run on hadoop:\n");
+            while ((s = stdInput3.readLine()) != null) {
+                System.out.println(s);
+            }
+
+
+            System.out.println("Here is the standard error of the select min run on hadoop (if any):\n");
+            while ((s = stdError3.readLine()) != null) {
+                System.out.println(s);
+            }
+
+
+            sleeper = 10000000L;
+            while (sleeper > 0) {
+                sleeper--; //delay
+            }
+
+            cmd = "hadoop fs -cat /output/part-r-00000";
+            Process b = Runtime.getRuntime().exec(cmd);
+
+            BufferedReader stdInput4 = new BufferedReader(new InputStreamReader(b.getInputStream()));
+            BufferedReader stdError4 = new BufferedReader(new InputStreamReader(b.getErrorStream()));
+
+            System.out.println("Here is the standard output of the select min cat command:\n");
+            while ((s = stdInput4.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            System.out.println("Here is the standard error of the select min cat command(if any):\n");
+            while ((s = stdError4.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            sleeper = 10000000L;
+            while (sleeper > 0) {
+                sleeper--; //delay
+            }
+
+            cmd = "hadoop fs -rm -r /output";
+            Process c = Runtime.getRuntime().exec(cmd);
+
+            BufferedReader stdInput5 = new BufferedReader(new InputStreamReader(c.getInputStream()));
+            BufferedReader stdError5 = new BufferedReader(new InputStreamReader(c.getErrorStream()));
+
+            System.out.println("Here is the standard output of the select min rm command:\n");
+            while ((s = stdInput5.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            System.out.println("Here is the standard error of the select min rm command (if any):\n");
+            while ((s = stdError5.readLine()) != null) {
+                System.out.println(s);
+            }
+        } // END OF TRY
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
     // END OF SELECT SUM
 
     public static void main(String[] args) {
@@ -496,8 +653,9 @@ class shell {
 
                 System.out.println("inside parsed :" + parsed[1]);
                 String filename = parsed[1].replace(".csv", "");
+                String directory_name = filename+"_directory";
 
-
+                //mkdir(directory_name);
                 execload(parsed[1] + " /minihive");
                 execload(filename + "_schema.txt /minihive");
 
@@ -509,7 +667,7 @@ class shell {
 
 
             //START OF SELECT without COUNT
-            if (parsed[0].equals("SELECT") && parsed[1].indexOf("COUNT") != 0 && parsed[1].indexOf("SUM") != 0) {
+            if (parsed[0].equals("SELECT") && parsed[1].indexOf("COUNT") != 0 && parsed[1].indexOf("SUM") != 0 && parsed[1].indexOf("MIN") != 0) {
 
                 try {
 
@@ -707,6 +865,70 @@ int isString=0;
                 }
             }
             //end of select with sum
+            // start of select with MIN
+            else if (parsed[0].equals("SELECT") && parsed[1].indexOf("MIN") == 0){
+                System.out.println("Performing min job");
+                colname = parsed[1].split("\\(")[1].replace(")", "");
+                System.out.println(colname);
+                Integer colnumber = new Integer(-1);
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
+
+                    String schema = "";
+                    schema = br.readLine();
+                    String[] cols;
+                    //System.out.println(schema);
+
+                    String[] parsedQuery = schema.split(",");
+                    int counter = 0;
+
+                    String whereString = "";;
+                    Integer whereCondition = 0;
+                    int isString=0;
+                    String checkString = "";
+                    if (parsed.length > 4) {  
+
+                        checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";                      
+                        whereCondition = 1;
+                        counter = 0;
+                        while (counter < parsedQuery.length) {
+
+                            cols = parsedQuery[counter].split("=");
+                            if (cols[0].equals(parsed[5])) {
+                                colnumber = counter;
+                                if(cols[1].equals("str"))
+                                    isString = 1;
+                                break;
+                            }
+                            counter++;
+                        }
+                        if(isString ==1){
+                            checkString = "";
+                            String[] quotes = cmd.split("\"");
+                            whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1]+"\")";
+                         }
+                        else{
+                        whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
+                        }
+                }
+
+                 while (counter < parsedQuery.length) {
+                        cols = parsedQuery[counter].split("=");
+                        //System.out.println(cols[0]+"$"+cols[1]);
+                        if (cols[0].equals(colname)) {
+                            colnumber = counter;
+                            break;
+                        }
+                        counter++;
+                    }
+
+                    execmin(colnumber, whereCondition, whereString,  checkString);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            //end of select with min
             else {
                 try {
                     Process p = Runtime.getRuntime().exec(cmd);
