@@ -4,4 +4,10 @@
 data_schema.txt
 *_schema.txt
 *.csv
+CountColumn.java
+MinColumn.java
+SelectColumn.java
+SumColumn.java
+WhereCondition.java
+
 
