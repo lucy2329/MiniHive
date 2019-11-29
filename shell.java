@@ -314,6 +314,136 @@ class shell {
 
     }
     // END OF SELECT COUNT
+    // START OF SELECT SUM
+    public static void execsum(int colnumber, int whereCondition, String whereStr) {
+        String whereString = "";
+        String s = null;
+        String cmd = "";
+
+        if (whereCondition == 0) {
+            whereString = "1==1";
+        } else {
+            whereString = whereStr;
+        }
+        String code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;import org.apache.commons.lang3.StringUtils;public class SumColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, IntWritable, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {                String row = value.toString();        String[] rowElems = row.split(\",\");        String colString=\"\";        int counter = 0;        if(!StringUtils.isNumeric(rowElems["+colnumber+"]))          return;        if("+whereString+")        {                           context.write(one,new IntWritable(Integer.parseInt(rowElems["+colnumber+"])));        }         }  }  public static class IntSumReducer       extends Reducer<IntWritable,IntWritable,IntWritable,IntWritable> {    private IntWritable result = new IntWritable();    public void reduce(IntWritable key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {     int sum = 0;      IntWritable one = new IntWritable(1);      for (IntWritable val : values)        {                    sum += val.get();        }      result.set(sum);      context.write(one, result);    }}  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"word count\");    job.setJarByClass(SumColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(IntWritable.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
+                
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("SumColumn.java"));
+            writer.write(code);
+            writer.close();
+
+            cmd = "hadoop com.sun.tools.javac.Main SumColumn.java";
+            Process q = Runtime.getRuntime().exec(cmd);
+
+            BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
+
+            BufferedReader stdError1 = new BufferedReader(new InputStreamReader(q.getErrorStream()));
+
+            System.out.println("Here is the standard output of the java select sum compile command:\n");
+            while ((s = stdInput1.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            System.out.println("Here is the standard error of the java select sum compile command (if any):\n");
+            while ((s = stdError1.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            long sleeper = 10000000L;
+            while (sleeper > 0) {
+                sleeper--; //delay
+            }
+            //-------------------------------JAR COMMAND -------------------------------------------------------------------------------------------------------------------
+
+            cmd = "jar cf SumCol.jar SumColumn.class SumColumn$IntSumReducer.class SumColumn$TokenizerMapper.class";
+            Process r = Runtime.getRuntime().exec(cmd);
+
+            BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(r.getInputStream()));
+
+            BufferedReader stdError2 = new BufferedReader(new InputStreamReader(r.getErrorStream()));
+
+            System.out.println("Here is the standard output of the select sum jar command:\n");
+            while ((s = stdInput2.readLine()) != null) {
+                System.out.println(s);
+            }
+
+
+            System.out.println("Here is the standard error of the select sum jar command (if any):\n");
+            while ((s = stdError2.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            sleeper = 10000000L;
+            while (sleeper > 0) {
+                sleeper--; //delay
+            }
+
+            cmd = "hadoop jar SumCol.jar SumColumn /minihive /output";
+            Process z = Runtime.getRuntime().exec(cmd);
+
+            BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
+            BufferedReader stdError3 = new BufferedReader(new InputStreamReader(z.getErrorStream()));
+
+            System.out.println("Here is the standard output of the select sum run on hadoop:\n");
+            while ((s = stdInput3.readLine()) != null) {
+                System.out.println(s);
+            }
+
+
+            System.out.println("Here is the standard error of the select sum run on hadoop (if any):\n");
+            while ((s = stdError3.readLine()) != null) {
+                System.out.println(s);
+            }
+
+
+            sleeper = 10000000L;
+            while (sleeper > 0) {
+                sleeper--; //delay
+            }
+
+            cmd = "hadoop fs -cat /output/part-r-00000";
+            Process b = Runtime.getRuntime().exec(cmd);
+
+            BufferedReader stdInput4 = new BufferedReader(new InputStreamReader(b.getInputStream()));
+            BufferedReader stdError4 = new BufferedReader(new InputStreamReader(b.getErrorStream()));
+
+            System.out.println("Here is the standard output of the select sum cat command:\n");
+            while ((s = stdInput4.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            System.out.println("Here is the standard error of the select sum cat command(if any):\n");
+            while ((s = stdError4.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            sleeper = 10000000L;
+            while (sleeper > 0) {
+                sleeper--; //delay
+            }
+
+            cmd = "hadoop fs -rm -r /output";
+            Process c = Runtime.getRuntime().exec(cmd);
+
+            BufferedReader stdInput5 = new BufferedReader(new InputStreamReader(c.getInputStream()));
+            BufferedReader stdError5 = new BufferedReader(new InputStreamReader(c.getErrorStream()));
+
+            System.out.println("Here is the standard output of the select sum rm command:\n");
+            while ((s = stdInput5.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            System.out.println("Here is the standard error of the select sum rm command (if any):\n");
+            while ((s = stdError5.readLine()) != null) {
+                System.out.println(s);
+            }
+        } // END OF TRY
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    // END OF SELECT SUM
 
     public static void main(String[] args) {
 
@@ -379,9 +509,7 @@ class shell {
 
 
             //START OF SELECT without COUNT
-            if (parsed[0].equals("SELECT") && parsed[1].indexOf("COUNT") != 0) {
-
-
+            if (parsed[0].equals("SELECT") && parsed[1].indexOf("COUNT") != 0 && parsed[1].indexOf("SUM") != 0) {
 
                 try {
 
@@ -457,7 +585,7 @@ class shell {
                 colname = parsed[1].split("\\(")[1].replace(")", "");
                 System.out.println(colname);
                 Integer colnumber = new Integer(-1);
-		String checkString = "";
+		          String checkString = "";
             String whereString = "";;
 		Integer whereCondition = 0;
 int isString=0;
@@ -513,6 +641,66 @@ int isString=0;
                 }
             }
             //end of select with count
+            //start of select with sum
+            else if (parsed[0].equals("SELECT") && parsed[1].indexOf("SUM") == 0){
+                System.out.println("HERE");
+                colname = parsed[1].split("\\(")[1].replace(")", "");
+                System.out.println(colname);
+                Integer colnumber = new Integer(-1);
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
+
+                    String schema = "";
+                    schema = br.readLine();
+                    String[] cols;
+                    //System.out.println(schema);
+
+                    String[] parsedQuery = schema.split(",");
+                    int counter = 0;
+
+                    while (counter < parsedQuery.length) {
+                        cols = parsedQuery[counter].split("=");
+                        //System.out.println(cols[0]+"$"+cols[1]);
+                        if (cols[0].equals(colname)) {
+                            colnumber = counter;
+                            break;
+                        }
+                        counter++;
+                    }
+
+                    String whereString = "";;
+                    Integer whereCondition = 0;
+                    int isString=0;
+
+                    if (parsed.length > 4) {                        
+                        whereCondition = 1;
+                        counter = 0;
+                        while (counter < parsedQuery.length) {
+
+                            cols = parsedQuery[counter].split("=");
+                            if (cols[0].equals(parsed[5])) {
+                                colnumber = counter;
+                                if(cols[1].equals("str"))
+                                    isString = 1;
+                                break;
+                            }
+                            counter++;
+                        }
+                        if(isString ==1){
+                            throw new IllegalArgumentException("Can't add strings");
+                         }
+                         else{
+                        whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
+                        }
+                }
+
+                    execsum(colnumber, whereCondition, whereString);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            //end of select with sum
             else {
                 try {
                     Process p = Runtime.getRuntime().exec(cmd);
