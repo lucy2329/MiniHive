@@ -4,7 +4,7 @@ import java.util.Scanner;
 class shell {
     //mkdir function to create directory in hdfs
     public static void mkdir(String name) {
-        String cmd = "hadoop fs -mkdir /"+name;
+        String cmd = "hadoop fs -mkdir /" + name;
         String s = "";
         try {
             Process q = Runtime.getRuntime().exec(cmd);
@@ -22,8 +22,7 @@ class shell {
             while ((s = stdError1.readLine()) != null) {
                 System.out.println(s);
             }
-        } 
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -211,7 +210,7 @@ class shell {
     // END OF EXEC SELECT WITH WHERE 
 
     // START OF SELECT COUNT
-    public static void execcount(int colnumber,  int whereCondition, String whereStr, String checkString) {
+    public static void execcount(int colnumber, int whereCondition, String whereStr, String checkString) {
         String whereString = "";
         String s = null;
         String cmd = "";
@@ -352,8 +351,8 @@ class shell {
         } else {
             whereString = whereStr;
         }
-        String code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;import org.apache.commons.lang3.StringUtils;public class SumColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, IntWritable, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {                String row = value.toString();        String[] rowElems = row.split(\",\");        String colString=\"\";        int counter = 0;     "+checkString + "        if("+whereString+")        {                           context.write(one,new IntWritable(Integer.parseInt(rowElems["+colnumber+"])));        }         }  }  public static class IntSumReducer       extends Reducer<IntWritable,IntWritable,IntWritable,IntWritable> {    private IntWritable result = new IntWritable();    public void reduce(IntWritable key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {     int sum = 0;      IntWritable one = new IntWritable(1);      for (IntWritable val : values)        {                    sum += val.get();        }      result.set(sum);      context.write(one, result);    }}  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"word count\");    job.setJarByClass(SumColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(IntWritable.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
-                
+        String code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;import org.apache.commons.lang3.StringUtils;public class SumColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, IntWritable, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {                String row = value.toString();        String[] rowElems = row.split(\",\");        String colString=\"\";        int counter = 0;     " + checkString + "        if(" + whereString + ")        {                           context.write(one,new IntWritable(Integer.parseInt(rowElems[" + colnumber + "])));        }         }  }  public static class IntSumReducer       extends Reducer<IntWritable,IntWritable,IntWritable,IntWritable> {    private IntWritable result = new IntWritable();    public void reduce(IntWritable key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {     int sum = 0;      IntWritable one = new IntWritable(1);      for (IntWritable val : values)        {                    sum += val.get();        }      result.set(sum);      context.write(one, result);    }}  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"word count\");    job.setJarByClass(SumColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(IntWritable.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
+
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("SumColumn.java"));
             writer.write(code);
@@ -481,9 +480,9 @@ class shell {
         } else {
             whereString = whereStr;
         }
-        
-        String code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;import org.apache.commons.lang3.StringUtils;import java.util.Iterator; public class MinColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{          private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");  "+checkString+"    if("+whereString+" && StringUtils.isNumeric(rowElems["+colnumber+"])) {          context.write(new Text(\"\"), new IntWritable(Integer.parseInt(rowElems["+colnumber+"])));            }      }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private IntWritable result = new IntWritable();    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      int min = Integer.MAX_VALUE;      Iterator<IntWritable> iterator = values.iterator();      while (iterator.hasNext()) {          int value = iterator.next().get();        if (value < min) {          min = value;        }    }     context.write(new Text(key), new IntWritable(min));    }}  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"word count\");    job.setJarByClass(MinColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
-                
+
+        String code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;import org.apache.commons.lang3.StringUtils;import java.util.Iterator; public class MinColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{          private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");  " + checkString + "    if(" + whereString + " && StringUtils.isNumeric(rowElems[" + colnumber + "])) {          context.write(new Text(\"\"), new IntWritable(Integer.parseInt(rowElems[" + colnumber + "])));            }      }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private IntWritable result = new IntWritable();    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      int min = Integer.MAX_VALUE;      Iterator<IntWritable> iterator = values.iterator();      while (iterator.hasNext()) {          int value = iterator.next().get();        if (value < min) {          min = value;        }    }     context.write(new Text(key), new IntWritable(min));    }}  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"word count\");    job.setJarByClass(MinColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
+
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("MinColumn.java"));
             writer.write(code);
@@ -653,7 +652,7 @@ class shell {
 
                 System.out.println("inside parsed :" + parsed[1]);
                 String filename = parsed[1].replace(".csv", "");
-                String directory_name = filename+"_directory";
+                String directory_name = filename + "_directory";
 
                 //mkdir(directory_name);
                 execload(parsed[1] + " /minihive");
@@ -687,7 +686,7 @@ class shell {
                     Integer colnumber = new Integer(-1);
                     String checkString = "";
                     String whereString = "";
-                    int isString=0;
+                    int isString = 0;
                     //select a from tbl where b < 5
                     if (parsed.length > 4) {
                         checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";
@@ -698,20 +697,19 @@ class shell {
                             cols = parsedQuery[counter].split("=");
                             if (cols[0].equals(parsed[5])) {
                                 colnumber = counter;
-                                if(cols[1].equals("str"))isString = 1;
+                                if (cols[1].equals("str")) isString = 1;
                                 break;
                             }
                             counter++;
                         }
-                        if(isString ==1){
-                         	checkString = "";
-                         	String[] quotes = cmd.split("\"");
- 	                        whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1]+"\")";
-                         }
-                         else{
-                        whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
-                    	}
-            	}
+                        if (isString == 1) {
+                            checkString = "";
+                            String[] quotes = cmd.split("\"");
+                            whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1] + "\")";
+                        } else {
+                            whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
+                        }
+                    }
 
                     colnumber = -1;
                     System.out.println(colNumList[0]);
@@ -743,10 +741,10 @@ class shell {
                 colname = parsed[1].split("\\(")[1].replace(")", "");
                 System.out.println(colname);
                 Integer colnumber = new Integer(-1);
-		          String checkString = "";
-            String whereString = "";;
-		Integer whereCondition = 0;
-int isString=0;
+                String checkString = "";
+                String whereString = "";;
+                Integer whereCondition = 0;
+                int isString = 0;
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
 
@@ -758,6 +756,31 @@ int isString=0;
                     String[] parsedQuery = schema.split(",");
                     int counter = 0;
 
+
+
+                    if (parsed.length > 4) {
+                        checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";
+                        whereCondition = 1;
+                        counter = 0;
+                        while (counter < parsedQuery.length) {
+
+                            cols = parsedQuery[counter].split("=");
+                            if (cols[0].equals(parsed[5])) {
+                                colnumber = counter;
+                                if (cols[1].equals("str")) isString = 1;
+                                break;
+                            }
+                            counter++;
+                        }
+                        if (isString == 1) {
+                            checkString = "";
+                            String[] quotes = cmd.split("\"");
+                            whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1] + "\")";
+                        } else {
+                            whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
+                        }
+                    }
+                    counter = 0;
                     while (counter < parsedQuery.length) {
                         cols = parsedQuery[counter].split("=");
                         //System.out.println(cols[0]+"$"+cols[1]);
@@ -768,30 +791,6 @@ int isString=0;
                         counter++;
                     }
 
-		    if (parsed.length > 4) {
-                        checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";
-                        whereCondition = 1;
-                        counter = 0;
-                        while (counter < parsedQuery.length) {
-
-                            cols = parsedQuery[counter].split("=");
-                            if (cols[0].equals(parsed[5])) {
-                                colnumber = counter;
-                                if(cols[1].equals("str"))isString = 1;
-                                break;
-                            }
-                            counter++;
-                        }
-                        if(isString ==1){
-                         	checkString = "";
-                         	String[] quotes = cmd.split("\"");
- 	                        whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1]+"\")";
-                         }
-                         else{
-                        whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
-                    	}
-            	}
-
                     execcount(colnumber, whereCondition, whereString, checkString);
 
                 } catch (IOException e) {
@@ -800,7 +799,7 @@ int isString=0;
             }
             //end of select with count
             //start of select with sum
-            else if (parsed[0].equals("SELECT") && parsed[1].indexOf("SUM") == 0){
+            else if (parsed[0].equals("SELECT") && parsed[1].indexOf("SUM") == 0) {
                 System.out.println("HERE");
                 colname = parsed[1].split("\\(")[1].replace(")", "");
                 System.out.println(colname);
@@ -816,15 +815,15 @@ int isString=0;
                     String[] parsedQuery = schema.split(",");
                     int counter = 0;
 
-                   
+
 
                     String whereString = "";;
                     Integer whereCondition = 0;
-                    int isString=0;
+                    int isString = 0;
                     String checkString = "";
-                    if (parsed.length > 4) {  
+                    if (parsed.length > 4) {
 
-                        checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";                      
+                        checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";
                         whereCondition = 1;
                         counter = 0;
                         while (counter < parsedQuery.length) {
@@ -832,23 +831,22 @@ int isString=0;
                             cols = parsedQuery[counter].split("=");
                             if (cols[0].equals(parsed[5])) {
                                 colnumber = counter;
-                                if(cols[1].equals("str"))
+                                if (cols[1].equals("str"))
                                     isString = 1;
                                 break;
                             }
                             counter++;
                         }
-                        if(isString ==1){
+                        if (isString == 1) {
                             checkString = "";
                             String[] quotes = cmd.split("\"");
-                            whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1]+"\")";
-                         }
-                        else{
-                        whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
+                            whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1] + "\")";
+                        } else {
+                            whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
                         }
-                }
-
-                 while (counter < parsedQuery.length) {
+                    }
+                    counter =0;
+                    while (counter < parsedQuery.length) {
                         cols = parsedQuery[counter].split("=");
                         //System.out.println(cols[0]+"$"+cols[1]);
                         if (cols[0].equals(colname)) {
@@ -858,7 +856,7 @@ int isString=0;
                         counter++;
                     }
 
-                    execsum(colnumber, whereCondition, whereString,  checkString);
+                    execsum(colnumber, whereCondition, whereString, checkString);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -866,7 +864,7 @@ int isString=0;
             }
             //end of select with sum
             // start of select with MIN
-            else if (parsed[0].equals("SELECT") && parsed[1].indexOf("MIN") == 0){
+            else if (parsed[0].equals("SELECT") && parsed[1].indexOf("MIN") == 0) {
                 System.out.println("Performing min job");
                 colname = parsed[1].split("\\(")[1].replace(")", "");
                 System.out.println(colname);
@@ -884,11 +882,11 @@ int isString=0;
 
                     String whereString = "";;
                     Integer whereCondition = 0;
-                    int isString=0;
+                    int isString = 0;
                     String checkString = "";
-                    if (parsed.length > 4) {  
+                    if (parsed.length > 4) {
 
-                        checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";                      
+                        checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";
                         whereCondition = 1;
                         counter = 0;
                         while (counter < parsedQuery.length) {
@@ -896,23 +894,22 @@ int isString=0;
                             cols = parsedQuery[counter].split("=");
                             if (cols[0].equals(parsed[5])) {
                                 colnumber = counter;
-                                if(cols[1].equals("str"))
+                                if (cols[1].equals("str"))
                                     isString = 1;
                                 break;
                             }
                             counter++;
                         }
-                        if(isString ==1){
+                        if (isString == 1) {
                             checkString = "";
                             String[] quotes = cmd.split("\"");
-                            whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1]+"\")";
-                         }
-                        else{
-                        whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
+                            whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1] + "\")";
+                        } else {
+                            whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
                         }
-                }
-                 counter = 0;
-                 while (counter < parsedQuery.length) {
+                    }
+                    counter = 0;
+                    while (counter < parsedQuery.length) {
                         cols = parsedQuery[counter].split("=");
                         //System.out.println(cols[0]+"$"+cols[1]);
                         if (cols[0].equals(colname)) {
@@ -922,7 +919,7 @@ int isString=0;
                         counter++;
                     }
 
-                    execmin(colnumber, whereCondition, whereString,  checkString);
+                    execmin(colnumber, whereCondition, whereString, checkString);
 
                 } catch (IOException e) {
                     e.printStackTrace();
