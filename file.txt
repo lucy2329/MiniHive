@@ -1,4 +1,4 @@
-word1
+word
 hey
 cat
 dog
