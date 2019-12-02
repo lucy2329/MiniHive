@@ -29,7 +29,7 @@ class shell {
     }
     // end of mkdir function
 
-    //EXEC LOAD START
+    //EXEC LOAD START - loads onto hdfs
     public static void execload(String filename) {
         String cmd = "hadoop fs -put " + filename;
         String s = null;
@@ -61,7 +61,7 @@ class shell {
 
 
     // EXEC SELECT , WHERE here 
-    public static void execselect(Integer[] columnNumbers, int columnLength, int whereCondition, String whereStr, String checkString) {
+    public static void execselect(Integer[] columnNumbers, int columnLength, int whereCondition, String whereStr, String checkString, String inputLocation) {
         String whereString = "";
         String s = null;
         String cmd = "";
@@ -141,7 +141,7 @@ class shell {
                 sleeper--; //delay
             }
 
-            cmd = "hadoop jar SelectCol.jar SelectColumn /minihive /output";
+            cmd = "hadoop jar SelectCol.jar SelectColumn /"+inputLocation+" /output";
             Process z = Runtime.getRuntime().exec(cmd);
 
             BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
@@ -210,7 +210,7 @@ class shell {
     // END OF EXEC SELECT WITH WHERE 
 
     // START OF SELECT COUNT
-    public static void execcount(int colnumber, int whereCondition, String whereStr, String checkString) {
+    public static void execcount(int colnumber, int whereCondition, String whereStr, String checkString, String inputLocation) {
         String whereString = "";
         String s = null;
         String cmd = "";
@@ -274,7 +274,7 @@ class shell {
                 sleeper--; //delay
             }
 
-            cmd = "hadoop jar CountCol.jar CountColumn /minihive /output";
+            cmd = "hadoop jar CountCol.jar CountColumn /"+inputLocation+" /output";
             Process z = Runtime.getRuntime().exec(cmd);
 
             BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
@@ -341,7 +341,7 @@ class shell {
     }
     // END OF SELECT COUNT
     // START OF SELECT SUM
-    public static void execsum(int colnumber, int whereCondition, String whereStr, String checkString) {
+    public static void execsum(int colnumber, int whereCondition, String whereStr, String checkString, String inputLocation) {
         String whereString = "";
         String s = null;
         String cmd = "";
@@ -404,7 +404,7 @@ class shell {
                 sleeper--; //delay
             }
 
-            cmd = "hadoop jar SumCol.jar SumColumn /minihive /output";
+            cmd = "hadoop jar SumCol.jar SumColumn /"+inputLocation+" /output";
             Process z = Runtime.getRuntime().exec(cmd);
 
             BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
@@ -470,7 +470,7 @@ class shell {
 
     }
 
-    public static void execmin(int colnumber, int whereCondition, String whereStr, String checkString) {
+    public static void execmin(int colnumber, int whereCondition, String whereStr, String checkString, String inputLocation) {
         String whereString = "";
         String s = null;
         String cmd = "";
@@ -534,7 +534,7 @@ class shell {
                 sleeper--; //delay
             }
 
-            cmd = "hadoop jar MinCol.jar MinColumn /minihive /output";
+            cmd = "hadoop jar MinCol.jar MinColumn /"+inputLocation+" /output";
             Process z = Runtime.getRuntime().exec(cmd);
 
             BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
@@ -623,8 +623,10 @@ class shell {
             String[] parsed = cmd.split(" ");
             System.out.println(parsed[0]);
 
+            String colname = parsed[1];
+            String tablename = parsed[3];            
+
             if (parsed[0].equals("LOAD")) {
-                cmd = "hadoop fs -put " + parsed[1] + " /minihive";
                 load = 1;
                 System.out.println(parsed[1]);
                 String fileContent = "";
@@ -654,24 +656,26 @@ class shell {
                 String filename = parsed[1].replace(".csv", "");
                 String directory_name = filename + "_directory";
 
-                //mkdir(directory_name);
-                execload(parsed[1] + " /minihive");
-                execload(filename + "_schema.txt /minihive");
+                mkdir(directory_name);
+                long sleeper = 10000000L;
+                while (sleeper > 0) {
+                    sleeper--; //delay
+                }
+                System.out.println(parsed[1]+" /"+directory_name);
+                execload(parsed[1] + " /"+directory_name);
+                //execload(filename + "_schema.txt /minihive");
 
             }
             // LOAD DONE
-
-            String colname = parsed[1];
-            String tablename = parsed[3];
-
-
+            
             //START OF SELECT without COUNT
-            if (parsed[0].equals("SELECT") && parsed[1].indexOf("COUNT") != 0 && parsed[1].indexOf("SUM") != 0 && parsed[1].indexOf("MIN") != 0) {
+            else if (parsed[0].equals("SELECT") && parsed[1].indexOf("COUNT") != 0 && parsed[1].indexOf("SUM") != 0 && parsed[1].indexOf("MIN") != 0) {
 
                 try {
 
                     String schema = "";
                     BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
+                    String inputLocation = tablename+"_directory";
 
                     int whereCondition = 0;
                     schema = br.readLine();
@@ -729,7 +733,7 @@ class shell {
                         counterList += 1;
                     }
                     columnLength = counterList - 1;
-                    execselect(columnNumbers, columnLength, whereCondition, whereString, checkString);
+                    execselect(columnNumbers, columnLength, whereCondition, whereString, checkString, inputLocation);
                     //^ Executing select
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -747,6 +751,7 @@ class shell {
                 int isString = 0;
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
+                    String inputLocation = tablename + "_directory";
 
                     String schema = "";
                     schema = br.readLine();
@@ -791,7 +796,7 @@ class shell {
                         counter++;
                     }
 
-                    execcount(colnumber, whereCondition, whereString, checkString);
+                    execcount(colnumber, whereCondition, whereString, checkString, inputLocation);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -806,7 +811,7 @@ class shell {
                 Integer colnumber = new Integer(-1);
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
-
+                    String inputLocation = tablename + "_directory";
                     String schema = "";
                     schema = br.readLine();
                     String[] cols;
@@ -856,7 +861,7 @@ class shell {
                         counter++;
                     }
 
-                    execsum(colnumber, whereCondition, whereString, checkString);
+                    execsum(colnumber, whereCondition, whereString, checkString, inputLocation);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -871,6 +876,7 @@ class shell {
                 Integer colnumber = new Integer(-1);
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
+                    String inputLocation = tablename+"_directory";
 
                     String schema = "";
                     schema = br.readLine();
@@ -919,7 +925,7 @@ class shell {
                         counter++;
                     }
 
-                    execmin(colnumber, whereCondition, whereString, checkString);
+                    execmin(colnumber, whereCondition, whereString, checkString, inputLocation);
 
                 } catch (IOException e) {
                     e.printStackTrace();
