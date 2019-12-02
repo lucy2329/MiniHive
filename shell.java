@@ -10,14 +10,14 @@ class shell {
             Process q = Runtime.getRuntime().exec(cmd);
             BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
 
-            
+
 
 
             while ((s = stdInput1.readLine()) != null) {
                 System.out.println(s);
             }
 
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -35,14 +35,14 @@ class shell {
             Process q = Runtime.getRuntime().exec(cmd);
             BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
 
-            
+
 
 
             while ((s = stdInput1.readLine()) != null) {
                 System.out.println(s);
             }
 
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,7 +87,7 @@ class shell {
 
             BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
 
-            
+
 
 
             // read the output from the command
@@ -106,21 +106,21 @@ class shell {
 
             BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(r.getInputStream()));
 
-            
+
             // read the output from the command
             while ((s = stdInput2.readLine()) != null) {
                 System.out.println(s);
             }
 
             // read any errors from the attempted command
-             
+
 
             sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
             }
 
-            cmd = "hadoop jar SelectCol.jar SelectColumn /"+inputLocation+" /output";
+            cmd = "hadoop jar SelectCol.jar SelectColumn /" + inputLocation + " /output";
             Process z = Runtime.getRuntime().exec(cmd);
 
             BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
@@ -210,20 +210,20 @@ class shell {
 
             BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(r.getInputStream()));
 
-            
+
 
             while ((s = stdInput2.readLine()) != null) {
                 System.out.println(s);
             }
 
-            
+
 
             sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
             }
 
-            cmd = "hadoop jar CountCol.jar CountColumn /"+inputLocation+" /output";
+            cmd = "hadoop jar CountCol.jar CountColumn /" + inputLocation + " /output";
             Process z = Runtime.getRuntime().exec(cmd);
 
             BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
@@ -277,9 +277,9 @@ class shell {
         String cmd = "";
 
         if (whereCondition == 0) {
-            whereString = "StringUtils.isNumeric(rowElems["+colnumber+"]) && "+"1==1";
+            whereString = "StringUtils.isNumeric(rowElems[" + colnumber + "]) && " + "1==1";
         } else {
-            whereString = "StringUtils.isNumeric(rowElems["+colnumber+"]) && "+whereStr;
+            whereString = "StringUtils.isNumeric(rowElems[" + colnumber + "]) && " + whereStr;
         }
         String code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;import org.apache.commons.lang3.StringUtils;public class SumColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, IntWritable, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {                String row = value.toString();        String[] rowElems = row.split(\",\");        String colString=\"\";        int counter = 0;     " + checkString + "        if(" + whereString + ")        {                           context.write(one,new IntWritable(Integer.parseInt(rowElems[" + colnumber + "])));        }         }  }  public static class IntSumReducer       extends Reducer<IntWritable,IntWritable,IntWritable,IntWritable> {    private IntWritable result = new IntWritable();    public void reduce(IntWritable key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {     int sum = 0;      IntWritable one = new IntWritable(1);      for (IntWritable val : values)        {                    sum += val.get();        }      result.set(sum);      context.write(one, result);    }}  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"word count\");    job.setJarByClass(SumColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(IntWritable.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
 
@@ -293,13 +293,13 @@ class shell {
 
             BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
 
-            
+
 
             while ((s = stdInput1.readLine()) != null) {
                 System.out.println(s);
             }
 
-            
+
             long sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
@@ -311,20 +311,20 @@ class shell {
 
             BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(r.getInputStream()));
 
-            
+
 
             while ((s = stdInput2.readLine()) != null) {
                 System.out.println(s);
             }
 
 
-        
+
             sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
             }
 
-            cmd = "hadoop jar SumCol.jar SumColumn /"+inputLocation+" /output";
+            cmd = "hadoop jar SumCol.jar SumColumn /" + inputLocation + " /output";
             Process z = Runtime.getRuntime().exec(cmd);
 
             BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
@@ -351,7 +351,7 @@ class shell {
                 System.out.println(s);
             }
 
-        
+
             sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
@@ -367,7 +367,7 @@ class shell {
                 System.out.println(s);
             }
 
-            
+
         } // END OF TRY
         catch (IOException e) {
             e.printStackTrace();
@@ -381,9 +381,9 @@ class shell {
         String cmd = "";
 
         if (whereCondition == 0) {
-            whereString = "StringUtils.isNumeric(rowElems["+colnumber+"]) && "+"1==1";
+            whereString = "StringUtils.isNumeric(rowElems[" + colnumber + "]) && " + "1==1";
         } else {
-            whereString = "StringUtils.isNumeric(rowElems["+colnumber+"]) && "+whereStr;
+            whereString = "StringUtils.isNumeric(rowElems[" + colnumber + "]) && " + whereStr;
         }
 
         String code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;import org.apache.commons.lang3.StringUtils;import java.util.Iterator; public class MinColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{          private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");  " + checkString + "    if(" + whereString + " && StringUtils.isNumeric(rowElems[" + colnumber + "])) {          context.write(new Text(\"\"), new IntWritable(Integer.parseInt(rowElems[" + colnumber + "])));            }      }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private IntWritable result = new IntWritable();    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      int min = Integer.MAX_VALUE;      Iterator<IntWritable> iterator = values.iterator();      while (iterator.hasNext()) {          int value = iterator.next().get();        if (value < min) {          min = value;        }    }     context.write(new Text(key), new IntWritable(min));    }}  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"word count\");    job.setJarByClass(MinColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
@@ -398,7 +398,7 @@ class shell {
 
             BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
 
-            
+
 
             while ((s = stdInput1.readLine()) != null) {
                 System.out.println(s);
@@ -415,7 +415,7 @@ class shell {
 
             BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(r.getInputStream()));
 
-            
+
 
             while ((s = stdInput2.readLine()) != null) {
                 System.out.println(s);
@@ -427,7 +427,7 @@ class shell {
                 sleeper--; //delay
             }
 
-            cmd = "hadoop jar MinCol.jar MinColumn /"+inputLocation+" /output";
+            cmd = "hadoop jar MinCol.jar MinColumn /" + inputLocation + " /output";
             Process z = Runtime.getRuntime().exec(cmd);
 
             BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
@@ -468,7 +468,7 @@ class shell {
                 System.out.println(s);
             }
 
-            
+
         } // END OF TRY
         catch (IOException e) {
             e.printStackTrace();
@@ -478,8 +478,7 @@ class shell {
     // END OF SELECT SUM
 
     public static void main(String[] args) {
-        again:
-        while (true) {
+        again: while (true) {
             String s = null;
             Integer load = new Integer(0);
             Integer wordcount = new Integer(0);
@@ -497,14 +496,14 @@ class shell {
             }
             String[] parsed = cmd.split(" ");
 
-            if(parsed.length < 4){
+            if (parsed.length < 4) {
                 System.out.println("Wrong Command");
                 continue again;
 
-            }                
+            }
 
             String colname = parsed[1];
-            String tablename = parsed[3];            
+            String tablename = parsed[3];
 
             if (parsed[0].equals("LOAD")) {
                 load = 1;
@@ -539,13 +538,13 @@ class shell {
                 while (sleeper > 0) {
                     sleeper--; //delay
                 }
-                System.out.println(parsed[1]+" /"+directory_name);
-                execload(parsed[1] + " /"+directory_name);
+                System.out.println(parsed[1] + " /" + directory_name);
+                execload(parsed[1] + " /" + directory_name);
                 //execload(filename + "_schema.txt /minihive");
 
             }
             // LOAD DONE
-            
+
             //START OF SELECT without COUNT
             else if (parsed[0].equals("SELECT") && parsed[1].indexOf("COUNT") != 0 && parsed[1].indexOf("SUM") != 0 && parsed[1].indexOf("MIN") != 0) {
 
@@ -553,7 +552,7 @@ class shell {
 
                     String schema = "";
                     BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
-                    String inputLocation = tablename+"_directory";
+                    String inputLocation = tablename + "_directory";
 
                     int whereCondition = 0;
                     schema = br.readLine();
@@ -584,11 +583,11 @@ class shell {
                             }
                             counter++;
                         }
-                        if (colnumber == -1){
+                        if (colnumber == -1) {
                             System.out.println("No such column " + parsed[5]);
                             continue again;
                         }
-                        checkString = "if(!StringUtils.isNumeric(rowElems["+colnumber+"])) return;";
+                        checkString = "if(!StringUtils.isNumeric(rowElems[" + colnumber + "])) return;";
                         if (isString == 1) {
                             checkString = "";
                             String[] quotes = cmd.split("\"");
@@ -601,10 +600,10 @@ class shell {
                     colnumber = -1;
                     while (counterList < colNumList.length) {
                         int counter = 0;
-                        int found  = 0;
+                        int found = 0;
                         while (counter < parsedQuery.length) {
                             cols = parsedQuery[counter].split("=");
-                            
+
                             if (cols[0].equals(colNumList[counterList])) {
                                 columnNumbers[counterList] = counter;
                                 colnumber = counter;
@@ -613,7 +612,7 @@ class shell {
                             }
                             counter++;
                         }
-                        if(found == 0){
+                        if (found == 0) {
                             System.out.println("Wrong column names used");
                             continue again;
                         }
@@ -661,8 +660,8 @@ class shell {
                             }
                             counter++;
                         }
-                        if (colnumber == -1){
-                            System.out.println("No such column "+ parsed[5]);
+                        if (colnumber == -1) {
+                            System.out.println("No such column " + parsed[5]);
                             continue again;
                         }
                         if (isString == 1) {
@@ -671,7 +670,7 @@ class shell {
                             whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1] + "\")";
                         } else {
 
-                        checkString = "if(!StringUtils.isNumeric(rowElems["+colnumber+"])) return;";
+                            checkString = "if(!StringUtils.isNumeric(rowElems[" + colnumber + "])) return;";
                             whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
                         }
                     }
@@ -686,10 +685,10 @@ class shell {
                         }
                         counter++;
                     }
-                    if (colnumber == -1){
-                            System.out.println("No such column " + colname);
-                            continue again;
-                        }
+                    if (colnumber == -1) {
+                        System.out.println("No such column " + colname);
+                        continue again;
+                    }
 
                     execcount(colnumber, whereCondition, whereString, checkString, inputLocation);
 
@@ -740,11 +739,11 @@ class shell {
                             whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1] + "\")";
                         } else {
 
-                            checkString = "if(!StringUtils.isNumeric(rowElems["+colnumber+"])) return;";
+                            checkString = "if(!StringUtils.isNumeric(rowElems[" + colnumber + "])) return;";
                             whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
                         }
                     }
-                    counter =0;
+                    counter = 0;
                     isString = 0;
                     while (counter < parsedQuery.length) {
                         cols = parsedQuery[counter].split("=");
@@ -752,14 +751,14 @@ class shell {
                         if (cols[0].equals(colname)) {
                             colnumber = counter;
                             if (cols[1].equals("str"))
-                                    isString = 1;
+                                isString = 1;
                             break;
                         }
                         counter++;
                     }
                     if (isString == 1) {
-                            System.out.println("Cant SUM over a str column " + colname);
-                            continue again;
+                        System.out.println("Cant SUM over a str column " + colname);
+                        continue again;
                     }
 
                     execsum(colnumber, whereCondition, whereString, checkString, inputLocation);
@@ -775,7 +774,7 @@ class shell {
                 Integer colnumber = new Integer(-1);
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
-                    String inputLocation = tablename+"_directory";
+                    String inputLocation = tablename + "_directory";
 
                     String schema = "";
                     schema = br.readLine();
@@ -808,7 +807,7 @@ class shell {
                             String[] quotes = cmd.split("\"");
                             whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1] + "\")";
                         } else {
-                            checkString = "if(!StringUtils.isNumeric(rowElems["+colnumber+"])) return;";
+                            checkString = "if(!StringUtils.isNumeric(rowElems[" + colnumber + "])) return;";
                             whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
                         }
                     }
@@ -820,14 +819,14 @@ class shell {
                         if (cols[0].equals(colname)) {
                             colnumber = counter;
                             if (cols[1].equals("str"))
-                                    isString = 1;
+                                isString = 1;
                             break;
                         }
                         counter++;
                     }
                     if (isString == 1) {
-                            System.out.println("Cant SUM over a str column " + colname);
-                            continue again;
+                        System.out.println("Cant SUM over a str column " + colname);
+                        continue again;
                     }
 
                     execmin(colnumber, whereCondition, whereString, checkString, inputLocation);
