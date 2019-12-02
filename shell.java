@@ -10,18 +10,14 @@ class shell {
             Process q = Runtime.getRuntime().exec(cmd);
             BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
 
-            BufferedReader stdError1 = new BufferedReader(new InputStreamReader(q.getErrorStream()));
+            
 
 
-            System.out.println("Here is the standard output of mkdir command:\n");
             while ((s = stdInput1.readLine()) != null) {
                 System.out.println(s);
             }
 
-            System.out.println("Here is the standard error of mkdir command (if any):\n");
-            while ((s = stdError1.readLine()) != null) {
-                System.out.println(s);
-            }
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,18 +35,14 @@ class shell {
             Process q = Runtime.getRuntime().exec(cmd);
             BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
 
-            BufferedReader stdError1 = new BufferedReader(new InputStreamReader(q.getErrorStream()));
+            
 
 
-            System.out.println("Here is the standard output of load command:\n");
             while ((s = stdInput1.readLine()) != null) {
                 System.out.println(s);
             }
 
-            System.out.println("Here is the standard error of load command (if any):\n");
-            while ((s = stdError1.readLine()) != null) {
-                System.out.println(s);
-            }
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -80,7 +72,6 @@ class shell {
                 outPutCommand = outPutCommand.concat("rowElems[" + columnNumbers[i] + "]+" + "\"|\"+");
             i += 1;
         }
-        System.out.println(outPutCommand);
         String soloselect_code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.commons.lang3.StringUtils;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;public class SelectColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");" + checkString + "        if(" + whereString + ")        {             context.write(new Text(" + outPutCommand + "),one);        }         }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private final static IntWritable one = new IntWritable(1);    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      for (IntWritable val : values) {        context.write(key, one);      }    }  }  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"select column\");    job.setJarByClass(SelectColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
 
         try {
@@ -96,21 +87,13 @@ class shell {
 
             BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
 
-            BufferedReader stdError1 = new BufferedReader(new InputStreamReader(q.getErrorStream()));
+            
 
 
             // read the output from the command
-            System.out.println("Here is the standard output of the java select compile command:\n");
             while ((s = stdInput1.readLine()) != null) {
                 System.out.println(s);
             }
-
-            // read any errors from the attempted command
-            System.out.println("Here is the standard error of the java select compile command (if any):\n");
-            while ((s = stdError1.readLine()) != null) {
-                System.out.println(s);
-            }
-
 
             long sleeper = 10000000L;
             while (sleeper > 0) {
@@ -123,18 +106,14 @@ class shell {
 
             BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(r.getInputStream()));
 
-            BufferedReader stdError2 = new BufferedReader(new InputStreamReader(r.getErrorStream()));
+            
             // read the output from the command
-            System.out.println("Here is the standard output of the select jar command:\n");
             while ((s = stdInput2.readLine()) != null) {
                 System.out.println(s);
             }
 
             // read any errors from the attempted command
-            System.out.println("Here is the standard error of the select jar command (if any):\n");
-            while ((s = stdError2.readLine()) != null) {
-                System.out.println(s);
-            }
+             
 
             sleeper = 10000000L;
             while (sleeper > 0) {
@@ -147,14 +126,7 @@ class shell {
             BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
             BufferedReader stdError3 = new BufferedReader(new InputStreamReader(z.getErrorStream()));
             // read the output from the command
-            System.out.println("Here is the standard output of the select run on hadoop:\n");
             while ((s = stdInput3.readLine()) != null) {
-                System.out.println(s);
-            }
-
-            // read any errors from the attempted command
-            System.out.println("Here is the standard error of the select run on hadoop (if any):\n");
-            while ((s = stdError3.readLine()) != null) {
                 System.out.println(s);
             }
 
@@ -164,22 +136,17 @@ class shell {
             }
 
             cmd = "hadoop fs -cat /output/part-r-00000";
-            System.out.println("COMMAND" + cmd);
             Process b = Runtime.getRuntime().exec(cmd);
 
             BufferedReader stdInput4 = new BufferedReader(new InputStreamReader(b.getInputStream()));
             BufferedReader stdError4 = new BufferedReader(new InputStreamReader(b.getErrorStream()));
             // read the output from the command
-            System.out.println("Here is the standard output of the select cat command:\n");
             while ((s = stdInput4.readLine()) != null) {
                 System.out.println(s);
             }
 
             // read any errors from the attempted command
-            System.out.println("Here is the standard error of the select cat command(if any):\n");
-            while ((s = stdError4.readLine()) != null) {
-                System.out.println(s);
-            }
+
 
             sleeper = 10000000L;
             while (sleeper > 0) {
@@ -192,16 +159,10 @@ class shell {
             BufferedReader stdInput5 = new BufferedReader(new InputStreamReader(c.getInputStream()));
             BufferedReader stdError5 = new BufferedReader(new InputStreamReader(c.getErrorStream()));
 
-            System.out.println("Here is the standard output of the select rm command:\n");
             while ((s = stdInput5.readLine()) != null) {
                 System.out.println(s);
             }
 
-
-            System.out.println("Here is the standard error of the select rm command (if any):\n");
-            while ((s = stdError5.readLine()) != null) {
-                System.out.println(s);
-            }
         } //end of try
         catch (IOException e) {
             e.printStackTrace();
@@ -233,15 +194,8 @@ class shell {
 
             BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
 
-            BufferedReader stdError1 = new BufferedReader(new InputStreamReader(q.getErrorStream()));
 
-            System.out.println("Here is the standard output of the java select compile command:\n");
             while ((s = stdInput1.readLine()) != null) {
-                System.out.println(s);
-            }
-
-            System.out.println("Here is the standard error of the java select compile command (if any):\n");
-            while ((s = stdError1.readLine()) != null) {
                 System.out.println(s);
             }
 
@@ -256,18 +210,13 @@ class shell {
 
             BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(r.getInputStream()));
 
-            BufferedReader stdError2 = new BufferedReader(new InputStreamReader(r.getErrorStream()));
+            
 
-            System.out.println("Here is the standard output of the select jar command:\n");
             while ((s = stdInput2.readLine()) != null) {
                 System.out.println(s);
             }
 
-
-            System.out.println("Here is the standard error of the select jar command (if any):\n");
-            while ((s = stdError2.readLine()) != null) {
-                System.out.println(s);
-            }
+            
 
             sleeper = 10000000L;
             while (sleeper > 0) {
@@ -280,17 +229,9 @@ class shell {
             BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
             BufferedReader stdError3 = new BufferedReader(new InputStreamReader(z.getErrorStream()));
 
-            System.out.println("Here is the standard output of the select run on hadoop:\n");
             while ((s = stdInput3.readLine()) != null) {
                 System.out.println(s);
             }
-
-
-            System.out.println("Here is the standard error of the select run on hadoop (if any):\n");
-            while ((s = stdError3.readLine()) != null) {
-                System.out.println(s);
-            }
-
 
             sleeper = 10000000L;
             while (sleeper > 0) {
@@ -303,13 +244,7 @@ class shell {
             BufferedReader stdInput4 = new BufferedReader(new InputStreamReader(b.getInputStream()));
             BufferedReader stdError4 = new BufferedReader(new InputStreamReader(b.getErrorStream()));
 
-            System.out.println("Here is the standard output of the select cat command:\n");
             while ((s = stdInput4.readLine()) != null) {
-                System.out.println(s);
-            }
-
-            System.out.println("Here is the standard error of the select cat command(if any):\n");
-            while ((s = stdError4.readLine()) != null) {
                 System.out.println(s);
             }
 
@@ -324,15 +259,10 @@ class shell {
             BufferedReader stdInput5 = new BufferedReader(new InputStreamReader(c.getInputStream()));
             BufferedReader stdError5 = new BufferedReader(new InputStreamReader(c.getErrorStream()));
 
-            System.out.println("Here is the standard output of the select count rm command:\n");
             while ((s = stdInput5.readLine()) != null) {
                 System.out.println(s);
             }
 
-            System.out.println("Here is the standard error of the select count rm command (if any):\n");
-            while ((s = stdError5.readLine()) != null) {
-                System.out.println(s);
-            }
         } // END OF TRY
         catch (IOException e) {
             e.printStackTrace();
@@ -347,9 +277,9 @@ class shell {
         String cmd = "";
 
         if (whereCondition == 0) {
-            whereString = "1==1";
+            whereString = "StringUtils.isNumeric(rowElems["+colnumber+"]) && "+"1==1";
         } else {
-            whereString = whereStr;
+            whereString = "StringUtils.isNumeric(rowElems["+colnumber+"]) && "+whereStr;
         }
         String code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;import org.apache.commons.lang3.StringUtils;public class SumColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, IntWritable, IntWritable>{    private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {                String row = value.toString();        String[] rowElems = row.split(\",\");        String colString=\"\";        int counter = 0;     " + checkString + "        if(" + whereString + ")        {                           context.write(one,new IntWritable(Integer.parseInt(rowElems[" + colnumber + "])));        }         }  }  public static class IntSumReducer       extends Reducer<IntWritable,IntWritable,IntWritable,IntWritable> {    private IntWritable result = new IntWritable();    public void reduce(IntWritable key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {     int sum = 0;      IntWritable one = new IntWritable(1);      for (IntWritable val : values)        {                    sum += val.get();        }      result.set(sum);      context.write(one, result);    }}  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"word count\");    job.setJarByClass(SumColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(IntWritable.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
 
@@ -363,18 +293,13 @@ class shell {
 
             BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
 
-            BufferedReader stdError1 = new BufferedReader(new InputStreamReader(q.getErrorStream()));
+            
 
-            System.out.println("Here is the standard output of the java select sum compile command:\n");
             while ((s = stdInput1.readLine()) != null) {
                 System.out.println(s);
             }
 
-            System.out.println("Here is the standard error of the java select sum compile command (if any):\n");
-            while ((s = stdError1.readLine()) != null) {
-                System.out.println(s);
-            }
-
+            
             long sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
@@ -386,19 +311,14 @@ class shell {
 
             BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(r.getInputStream()));
 
-            BufferedReader stdError2 = new BufferedReader(new InputStreamReader(r.getErrorStream()));
+            
 
-            System.out.println("Here is the standard output of the select sum jar command:\n");
             while ((s = stdInput2.readLine()) != null) {
                 System.out.println(s);
             }
 
 
-            System.out.println("Here is the standard error of the select sum jar command (if any):\n");
-            while ((s = stdError2.readLine()) != null) {
-                System.out.println(s);
-            }
-
+        
             sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
@@ -410,16 +330,10 @@ class shell {
             BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
             BufferedReader stdError3 = new BufferedReader(new InputStreamReader(z.getErrorStream()));
 
-            System.out.println("Here is the standard output of the select sum run on hadoop:\n");
             while ((s = stdInput3.readLine()) != null) {
                 System.out.println(s);
             }
 
-
-            System.out.println("Here is the standard error of the select sum run on hadoop (if any):\n");
-            while ((s = stdError3.readLine()) != null) {
-                System.out.println(s);
-            }
 
 
             sleeper = 10000000L;
@@ -433,16 +347,11 @@ class shell {
             BufferedReader stdInput4 = new BufferedReader(new InputStreamReader(b.getInputStream()));
             BufferedReader stdError4 = new BufferedReader(new InputStreamReader(b.getErrorStream()));
 
-            System.out.println("Here is the standard output of the select sum cat command:\n");
             while ((s = stdInput4.readLine()) != null) {
                 System.out.println(s);
             }
 
-            System.out.println("Here is the standard error of the select sum cat command(if any):\n");
-            while ((s = stdError4.readLine()) != null) {
-                System.out.println(s);
-            }
-
+        
             sleeper = 10000000L;
             while (sleeper > 0) {
                 sleeper--; //delay
@@ -454,15 +363,11 @@ class shell {
             BufferedReader stdInput5 = new BufferedReader(new InputStreamReader(c.getInputStream()));
             BufferedReader stdError5 = new BufferedReader(new InputStreamReader(c.getErrorStream()));
 
-            System.out.println("Here is the standard output of the select sum rm command:\n");
             while ((s = stdInput5.readLine()) != null) {
                 System.out.println(s);
             }
 
-            System.out.println("Here is the standard error of the select sum rm command (if any):\n");
-            while ((s = stdError5.readLine()) != null) {
-                System.out.println(s);
-            }
+            
         } // END OF TRY
         catch (IOException e) {
             e.printStackTrace();
@@ -476,9 +381,9 @@ class shell {
         String cmd = "";
 
         if (whereCondition == 0) {
-            whereString = "1==1";
+            whereString = "StringUtils.isNumeric(rowElems["+colnumber+"]) && "+"1==1";
         } else {
-            whereString = whereStr;
+            whereString = "StringUtils.isNumeric(rowElems["+colnumber+"]) && "+whereStr;
         }
 
         String code = "import java.io.IOException;import java.util.StringTokenizer;import org.apache.hadoop.conf.Configuration;import org.apache.hadoop.fs.Path;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Job;import org.apache.hadoop.mapreduce.Mapper;import org.apache.hadoop.mapreduce.Reducer;import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;import org.apache.commons.lang3.StringUtils;import java.util.Iterator; public class MinColumn {  public static class TokenizerMapper       extends Mapper<Object, Text, Text, IntWritable>{          private final static IntWritable one = new IntWritable(1);    private Text word = new Text();    public void map(Object key, Text value, Context context                        ) throws IOException, InterruptedException {        String row = value.toString();        String[] rowElems = row.split(\",\");  " + checkString + "    if(" + whereString + " && StringUtils.isNumeric(rowElems[" + colnumber + "])) {          context.write(new Text(\"\"), new IntWritable(Integer.parseInt(rowElems[" + colnumber + "])));            }      }  }  public static class IntSumReducer       extends Reducer<Text,IntWritable,Text,IntWritable> {    private IntWritable result = new IntWritable();    public void reduce(Text key, Iterable<IntWritable> values,                       Context context                       ) throws IOException, InterruptedException {      int min = Integer.MAX_VALUE;      Iterator<IntWritable> iterator = values.iterator();      while (iterator.hasNext()) {          int value = iterator.next().get();        if (value < min) {          min = value;        }    }     context.write(new Text(key), new IntWritable(min));    }}  public static void main(String[] args) throws Exception {    Configuration conf = new Configuration();    Job job = Job.getInstance(conf, \"word count\");    job.setJarByClass(MinColumn.class);    job.setMapperClass(TokenizerMapper.class);    job.setCombinerClass(IntSumReducer.class);    job.setReducerClass(IntSumReducer.class);    job.setOutputKeyClass(Text.class);    job.setOutputValueClass(IntWritable.class);    FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));    System.exit(job.waitForCompletion(true) ? 0 : 1);  }}";
@@ -493,15 +398,9 @@ class shell {
 
             BufferedReader stdInput1 = new BufferedReader(new InputStreamReader(q.getInputStream()));
 
-            BufferedReader stdError1 = new BufferedReader(new InputStreamReader(q.getErrorStream()));
+            
 
-            System.out.println("Here is the standard output of the java select min compile command:\n");
             while ((s = stdInput1.readLine()) != null) {
-                System.out.println(s);
-            }
-
-            System.out.println("Here is the standard error of the java select min compile command (if any):\n");
-            while ((s = stdError1.readLine()) != null) {
                 System.out.println(s);
             }
 
@@ -516,18 +415,12 @@ class shell {
 
             BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(r.getInputStream()));
 
-            BufferedReader stdError2 = new BufferedReader(new InputStreamReader(r.getErrorStream()));
+            
 
-            System.out.println("Here is the standard output of the select min jar command:\n");
             while ((s = stdInput2.readLine()) != null) {
                 System.out.println(s);
             }
 
-
-            System.out.println("Here is the standard error of the select min jar command (if any):\n");
-            while ((s = stdError2.readLine()) != null) {
-                System.out.println(s);
-            }
 
             sleeper = 10000000L;
             while (sleeper > 0) {
@@ -540,14 +433,7 @@ class shell {
             BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(z.getInputStream()));
             BufferedReader stdError3 = new BufferedReader(new InputStreamReader(z.getErrorStream()));
 
-            System.out.println("Here is the standard output of the select min run on hadoop:\n");
             while ((s = stdInput3.readLine()) != null) {
-                System.out.println(s);
-            }
-
-
-            System.out.println("Here is the standard error of the select min run on hadoop (if any):\n");
-            while ((s = stdError3.readLine()) != null) {
                 System.out.println(s);
             }
 
@@ -563,13 +449,7 @@ class shell {
             BufferedReader stdInput4 = new BufferedReader(new InputStreamReader(b.getInputStream()));
             BufferedReader stdError4 = new BufferedReader(new InputStreamReader(b.getErrorStream()));
 
-            System.out.println("Here is the standard output of the select min cat command:\n");
             while ((s = stdInput4.readLine()) != null) {
-                System.out.println(s);
-            }
-
-            System.out.println("Here is the standard error of the select min cat command(if any):\n");
-            while ((s = stdError4.readLine()) != null) {
                 System.out.println(s);
             }
 
@@ -584,15 +464,11 @@ class shell {
             BufferedReader stdInput5 = new BufferedReader(new InputStreamReader(c.getInputStream()));
             BufferedReader stdError5 = new BufferedReader(new InputStreamReader(c.getErrorStream()));
 
-            System.out.println("Here is the standard output of the select min rm command:\n");
             while ((s = stdInput5.readLine()) != null) {
                 System.out.println(s);
             }
 
-            System.out.println("Here is the standard error of the select min rm command (if any):\n");
-            while ((s = stdError5.readLine()) != null) {
-                System.out.println(s);
-            }
+            
         } // END OF TRY
         catch (IOException e) {
             e.printStackTrace();
@@ -602,7 +478,7 @@ class shell {
     // END OF SELECT SUM
 
     public static void main(String[] args) {
-
+        again:
         while (true) {
             String s = null;
             Integer load = new Integer(0);
@@ -619,16 +495,19 @@ class shell {
             if (cmd.equals("quit")) {
                 System.exit(0);
             }
-
             String[] parsed = cmd.split(" ");
-            System.out.println(parsed[0]);
+
+            if(parsed.length < 4){
+                System.out.println("Wrong Command");
+                continue again;
+
+            }                
 
             String colname = parsed[1];
             String tablename = parsed[3];            
 
             if (parsed[0].equals("LOAD")) {
                 load = 1;
-                System.out.println(parsed[1]);
                 String fileContent = "";
 
                 int i = 3;
@@ -652,7 +531,6 @@ class shell {
                 }
 
 
-                System.out.println("inside parsed :" + parsed[1]);
                 String filename = parsed[1].replace(".csv", "");
                 String directory_name = filename + "_directory";
 
@@ -693,7 +571,7 @@ class shell {
                     int isString = 0;
                     //select a from tbl where b < 5
                     if (parsed.length > 4) {
-                        checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";
+
                         whereCondition = 1;
                         int counter = 0;
                         while (counter < parsedQuery.length) {
@@ -706,6 +584,11 @@ class shell {
                             }
                             counter++;
                         }
+                        if (colnumber == -1){
+                            System.out.println("No such column " + parsed[5]);
+                            continue again;
+                        }
+                        checkString = "if(!StringUtils.isNumeric(rowElems["+colnumber+"])) return;";
                         if (isString == 1) {
                             checkString = "";
                             String[] quotes = cmd.split("\"");
@@ -716,19 +599,23 @@ class shell {
                     }
 
                     colnumber = -1;
-                    System.out.println(colNumList[0]);
                     while (counterList < colNumList.length) {
                         int counter = 0;
+                        int found  = 0;
                         while (counter < parsedQuery.length) {
-
                             cols = parsedQuery[counter].split("=");
-                            System.out.println(cols[0] + "$" + colNumList[counterList]);
+                            
                             if (cols[0].equals(colNumList[counterList])) {
                                 columnNumbers[counterList] = counter;
                                 colnumber = counter;
+                                found = 1;
                                 break;
                             }
                             counter++;
+                        }
+                        if(found == 0){
+                            System.out.println("Wrong column names used");
+                            continue again;
                         }
                         counterList += 1;
                     }
@@ -743,7 +630,6 @@ class shell {
             else if (parsed[0].equals("SELECT") && parsed[1].indexOf("COUNT") == 0) {
                 solocount = 1;
                 colname = parsed[1].split("\\(")[1].replace(")", "");
-                System.out.println(colname);
                 Integer colnumber = new Integer(-1);
                 String checkString = "";
                 String whereString = "";;
@@ -762,9 +648,7 @@ class shell {
                     int counter = 0;
 
 
-
                     if (parsed.length > 4) {
-                        checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";
                         whereCondition = 1;
                         counter = 0;
                         while (counter < parsedQuery.length) {
@@ -777,14 +661,21 @@ class shell {
                             }
                             counter++;
                         }
+                        if (colnumber == -1){
+                            System.out.println("No such column "+ parsed[5]);
+                            continue again;
+                        }
                         if (isString == 1) {
                             checkString = "";
                             String[] quotes = cmd.split("\"");
                             whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1] + "\")";
                         } else {
+
+                        checkString = "if(!StringUtils.isNumeric(rowElems["+colnumber+"])) return;";
                             whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
                         }
                     }
+                    colnumber = -1;
                     counter = 0;
                     while (counter < parsedQuery.length) {
                         cols = parsedQuery[counter].split("=");
@@ -795,6 +686,10 @@ class shell {
                         }
                         counter++;
                     }
+                    if (colnumber == -1){
+                            System.out.println("No such column " + colname);
+                            continue again;
+                        }
 
                     execcount(colnumber, whereCondition, whereString, checkString, inputLocation);
 
@@ -805,9 +700,7 @@ class shell {
             //end of select with count
             //start of select with sum
             else if (parsed[0].equals("SELECT") && parsed[1].indexOf("SUM") == 0) {
-                System.out.println("HERE");
                 colname = parsed[1].split("\\(")[1].replace(")", "");
-                System.out.println(colname);
                 Integer colnumber = new Integer(-1);
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
@@ -828,7 +721,6 @@ class shell {
                     String checkString = "";
                     if (parsed.length > 4) {
 
-                        checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";
                         whereCondition = 1;
                         counter = 0;
                         while (counter < parsedQuery.length) {
@@ -847,18 +739,27 @@ class shell {
                             String[] quotes = cmd.split("\"");
                             whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1] + "\")";
                         } else {
+
+                            checkString = "if(!StringUtils.isNumeric(rowElems["+colnumber+"])) return;";
                             whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
                         }
                     }
                     counter =0;
+                    isString = 0;
                     while (counter < parsedQuery.length) {
                         cols = parsedQuery[counter].split("=");
                         //System.out.println(cols[0]+"$"+cols[1]);
                         if (cols[0].equals(colname)) {
                             colnumber = counter;
+                            if (cols[1].equals("str"))
+                                    isString = 1;
                             break;
                         }
                         counter++;
+                    }
+                    if (isString == 1) {
+                            System.out.println("Cant SUM over a str column " + colname);
+                            continue again;
                     }
 
                     execsum(colnumber, whereCondition, whereString, checkString, inputLocation);
@@ -870,9 +771,7 @@ class shell {
             //end of select with sum
             // start of select with MIN
             else if (parsed[0].equals("SELECT") && parsed[1].indexOf("MIN") == 0) {
-                System.out.println("Performing min job");
                 colname = parsed[1].split("\\(")[1].replace(")", "");
-                System.out.println(colname);
                 Integer colnumber = new Integer(-1);
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(tablename + "_schema.txt"));
@@ -891,8 +790,6 @@ class shell {
                     int isString = 0;
                     String checkString = "";
                     if (parsed.length > 4) {
-
-                        checkString = "if(!StringUtils.isNumeric(rowElems[2])) return;";
                         whereCondition = 1;
                         counter = 0;
                         while (counter < parsedQuery.length) {
@@ -911,18 +808,26 @@ class shell {
                             String[] quotes = cmd.split("\"");
                             whereString = "rowElems[" + colnumber + "].equals(\"" + quotes[1] + "\")";
                         } else {
+                            checkString = "if(!StringUtils.isNumeric(rowElems["+colnumber+"])) return;";
                             whereString = "Integer.parseInt(rowElems[" + colnumber + "])" + parsed[6] + parsed[7];
                         }
                     }
                     counter = 0;
+                    isString = 0;
                     while (counter < parsedQuery.length) {
                         cols = parsedQuery[counter].split("=");
                         //System.out.println(cols[0]+"$"+cols[1]);
                         if (cols[0].equals(colname)) {
                             colnumber = counter;
+                            if (cols[1].equals("str"))
+                                    isString = 1;
                             break;
                         }
                         counter++;
+                    }
+                    if (isString == 1) {
+                            System.out.println("Cant SUM over a str column " + colname);
+                            continue again;
                     }
 
                     execmin(colnumber, whereCondition, whereString, checkString, inputLocation);
@@ -941,14 +846,7 @@ class shell {
                     BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
 
-                    System.out.println("Here is the standard output of the command:\n");
                     while ((s = stdInput.readLine()) != null) {
-                        System.out.println(s);
-                    }
-
-
-                    System.out.println("Here is the standard error of the command (if any):\n");
-                    while ((s = stdError.readLine()) != null) {
                         System.out.println(s);
                     }
 
